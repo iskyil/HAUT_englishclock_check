@@ -29,6 +29,7 @@ headers = {
 if __name__ == '__main__':
     request = requests.get(base_url, headers=headers)
     d = json.loads(request.content.decode('utf8'))
+    sub = d['data']['is_submited']
     if sub == 1:
         test = 'yes'
         print(test)
@@ -52,7 +53,7 @@ if __name__ == '__main__':
             with open('id.csv', 'w') as idFile:
                 idFile.write('%d' % id)
             # 正则匹配时间
-            sub = d['data']['is_submited']
+            time = d['data']['record_at']
             real_time = re.match(r'\w{4}-(\w{2}-\w{2})', time)
             realtime = real_time.group(1)
             # qq推送
