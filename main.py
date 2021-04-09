@@ -54,33 +54,17 @@ class Huge(object):
                 if auto == 1:
                     print(id)
                     url = 'https://apiopen.jingdaka.com/user/submit'
-                    data = {
-                        "content": "",
-                        "word_count": 0,
-                        "form_id": "",
-                        "document_list": [],
-                        "picture_list": [
-                            "                             "
-                        ],
+                    data2 = {
+                        "content": "", "word_count": 0, "form_id": "", "document_list": [],
+                        "picture_list": ["2021/04/02/3b1a3575-c493-2fae-a788-7d4d681cee30.jpg"],
                         "voice_list": [
-                            {
-                                # 语音地址，抓包获取
-                                "voice": "               ",
-                                # 语音时长，随意填取
-                                "voice_duration": 
-                            }
-                        ],
-                        "video_list": [],
-                        "web_title": "",
-                        "website": "",
-                        "show_range": 0,
+                            {"voice": "2021/04/02/abe5c97f-9fb8-c527-1ed6-6a385917a292.mp3", "voice_duration": 33}],
+                        "video_list": [], "web_title": "", "website": "", "show_range": 0,
                         "course_calendar_id": '%s' % (id),
-                        # 晨读营id,抓包获取
-                        "course_id": 972440,
-                        "record_at": "2021-%sT00:00:00+08:00" % (times)
+                        "course_id": 972440, "record_at": "2021-%sT00:00:00+08:00" % (times)
                     }
                     session = requests.session()
-                    request = session.get(url, headers=headers,data=json.dumps(data))
+                    request = session.get(url, headers=headers,data=json.dumps(data2))
                     d = json.loads(request.content.decode('utf8'))
                     sub = d['err_msg']
                     if sub == 'SUCCESS':
