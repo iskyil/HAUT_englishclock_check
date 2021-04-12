@@ -54,13 +54,14 @@ class Huge(object):
                 if auto == 1:
                     print(id)
                     url = 'https://apiopen.jingdaka.com/user/submit'
+                    id = int(id)
                     data2 = {
                         "content": "", "word_count": 0, "form_id": "", "document_list": [],
-                        "picture_list": ["2021/04/02/3b1a3575-c493-2fae-a788-7d4d681cee30.jpg"],
+                        "picture_list": ["                                             "],
                         "voice_list": [
-                            {"voice": "2021/04/02/abe5c97f-9fb8-c527-1ed6-6a385917a292.mp3", "voice_duration": 33}],
+                            {"voice": "                                          ", "voice_duration": 33}],
                         "video_list": [], "web_title": "", "website": "", "show_range": 0,
-                        "course_calendar_id": '%s' % (id),
+                        "course_calendar_id": id,
                         "course_id": 972440, "record_at": "2021-%sT00:00:00+08:00" % (times)
                     }
                     session = requests.session()
@@ -72,9 +73,9 @@ class Huge(object):
                     else:
                         text = '今日英语虎哥未打卡,请尽快打卡'
                 QmsgKey = "%s" % self.QmsgKey
-                print(QmsgKey)
-                print(times)
-                print(text)
+#                 print(QmsgKey)
+#                 print(times)
+#                 print(text)
                 content = f"""{times}{text}"""
                 data = {
                     "msg": content
