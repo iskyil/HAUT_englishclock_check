@@ -48,7 +48,7 @@ class Huge(object):
 
         request = self.session.get(url, headers=self.headers, params=params)
         data = json.loads(request.content.decode('utf8'))
-        return data['data']['is_submited']
+        return data['data']['is_submited'],data['data']['pc_content']
 
     def getPic(self):
         url = 'https://apiopen.jingdaka.com/user/submitlist'
@@ -69,8 +69,12 @@ class Huge(object):
         return pic, voc
 
     def checkin(self):
-        if Huge.isCheckin(self) == 1:
+        flag = Huge.isCheckin(self)
+        if flag[0] == 1:
             print('已经打卡了')
+            return
+        elif flag[1] == '':
+            print('没有打卡内容')
             return
         else:
             url = 'https://apiopen.jingdaka.com/user/submit'
@@ -93,9 +97,9 @@ class Huge(object):
             d = json.loads(request.content.decode('utf8'))
             sub = d['err_msg']
             if sub == 'SUCCESS':
-                text = '今日英语虎哥未打卡,已为您自动打卡'
+                print('今日英语虎哥未打卡,已为您自动打卡')
             else:
-                text = '今日英语虎哥未打卡,请尽快打卡'
+                print('今日英语虎哥未打卡,请尽快打卡')
 
 
 if __name__ == '__main__':
