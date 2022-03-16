@@ -54,7 +54,7 @@ class Huge(object):
         url = 'https://apiopen.jingdaka.com/user/submitlist'
         params = (
             ('order_type', '3'),
-            ('limit', '10'),
+            ('limit', '200'),
             ('offset', '0'),
             ('search_user_name', '软件'),
             ('course_id', self.couseid),
@@ -63,7 +63,7 @@ class Huge(object):
 
         request = self.session.get(url, headers=self.headers, params=params)
         data = json.loads(request.content.decode('utf8'))
-        rand = random.randint(0,9)
+        rand = random.randint(0,len(data['data']['submit_list'])-1)
         pic = data['data']['submit_list'][rand]['picture_list'][0]
         voc = data['data']['submit_list'][rand]['voice_list'][0]
         return pic, voc
@@ -74,16 +74,17 @@ class Huge(object):
             print('已经打卡了')
             return
         elif flag[1] == '':
-            print('没有打卡内容')
+            print('今天没有打卡内容')
             return
         else:
+            connect = Huge.getPic(self)
             url = 'https://apiopen.jingdaka.com/user/submit'
             data = {
                 "content": "", "word_count": 0, "form_id": "", "document_list": [],
-                "picture_list": [Huge.getPic(self)[0]],
+                "picture_list": [connect[0]],
                 "voice_list": [{
-                    "voice": Huge.getPic(self)[1]['voice_url'],
-                    "voice_duration": Huge.getPic(self)[1]['voice_duration']
+                    "voice": connect[1]['voice_url'],
+                    "voice_duration": connect[1]['voice_duration']
                 }],
                 "video_list": [],
                 "web_title": "",
@@ -93,6 +94,7 @@ class Huge(object):
                 "course_id": self.couseid[0],
                 "record_at": "%sT00:00:00+08:00" % Huge.getTimes()
             }
+
             request = self.session.post(url, headers=self.headers, data=json.dumps(data))
             data = json.loads(request.content.decode('utf8'))
             sub = data['err_msg']
