@@ -10,7 +10,7 @@ class Huge(object):
         # 抓包获取
         self.appid = '',
         self.apsid = '',
-        self.couseid = '',
+        self.couseid = 1216797, #河工大课程id
         self.session = requests.session()
         self.headers = {
             'Host': 'apiopen.jingdaka.com',
@@ -54,16 +54,16 @@ class Huge(object):
         url = 'https://apiopen.jingdaka.com/user/submitlist'
         params = (
             ('order_type', '3'),
-            ('limit', '100'),
+            ('limit', '10'),
             ('offset', '0'),
-            ('search_user_name', '电信'),
+            ('search_user_name', '软件'),
             ('course_id', self.couseid),
             ('record_at', Huge.getTimes()),
         )
 
         request = self.session.get(url, headers=self.headers, params=params)
         data = json.loads(request.content.decode('utf8'))
-        rand = random.randint(0,99)
+        rand = random.randint(0,9)
         pic = data['data']['submit_list'][rand]['picture_list'][0]
         voc = data['data']['submit_list'][rand]['voice_list'][0]
         return pic, voc
@@ -90,12 +90,12 @@ class Huge(object):
                 "website": "",
                 "show_range": 0,
                 "course_calendar_id": Huge.getCalendarId(self),
-                "course_id": self.couseid,
+                "course_id": self.couseid[0],
                 "record_at": "%sT00:00:00+08:00" % Huge.getTimes()
             }
             request = self.session.post(url, headers=self.headers, data=json.dumps(data))
-            d = json.loads(request.content.decode('utf8'))
-            sub = d['err_msg']
+            data = json.loads(request.content.decode('utf8'))
+            sub = data['err_msg']
             if sub == 'SUCCESS':
                 print('今日英语虎哥未打卡,已为您自动打卡')
             else:
