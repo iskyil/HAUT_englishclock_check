@@ -6,7 +6,7 @@ import random
 
 class Huge(object):
     def __init__(self):
-        #self.QmsgKey = '',
+        self.qq = '123456789' # 自己的qq,需添加机器人2125696539
         # 抓包获取
         self.appid = '',
         self.apsid = '',
@@ -28,6 +28,21 @@ class Huge(object):
 
     def getTimes():
         return str(datetime.date.today())
+
+    def Qsend(qq:int,msg:str):
+        data = {
+            'msg': msg,
+            'qq': qq,
+            'type':'text'
+        }
+        res = (requests.post('https://api.skyil.cn/send', data=data).text)
+        
+        print(res)
+        res = json.loads(res)
+        if res['code'] == 0:
+            print('推送成功')
+        else:
+            print('推送失败')
 
     def getCalendarId(self):
         url = 'https://apiopen.jingdaka.com/user/get_theme'
@@ -97,11 +112,11 @@ class Huge(object):
 
             request = self.session.post(url, headers=self.headers, data=json.dumps(data))
             data = json.loads(request.content.decode('utf8'))
-            sub = data['err_msg']
-            if sub == 'SUCCESS':
-                print('今日英语虎哥未打卡,已为您自动打卡')
+            if data['err_msg'] == 'SUCCESS':
+                msg = '今日英语虎哥未打卡,已为您自动打卡'
             else:
-                print('今日英语虎哥未打卡,请尽快打卡')
+                msg = '未打卡成功'
+            Huge.Qsend(self.qq,msg)
 
 
 if __name__ == '__main__':
