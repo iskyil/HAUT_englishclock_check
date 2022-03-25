@@ -6,7 +6,7 @@ import random
 
 class Huge(object):
     def __init__(self):
-        self.qq = '123456789' # 自己的qq,需添加机器人2125696539
+        self.qkey = 'q-key' # 自己的qkey,需添加机器人2125696539 见https://push.skyil.cn
         # 抓包获取
         self.appid = '',
         self.apsid = '',
@@ -29,10 +29,10 @@ class Huge(object):
     def getTimes():
         return str(datetime.date.today())
 
-    def Qsend(qq:int,msg:str):
+    def Qsend(qkey:str,msg:str):
         data = {
             'msg': msg,
-            'qq': qq,
+            'qkey': qkey,
             'type':'text'
         }
         res = (requests.post('https://api.skyil.cn/send', data=data).text)
@@ -116,7 +116,7 @@ class Huge(object):
                 msg = '今日英语虎哥未打卡,已为您自动打卡'
             else:
                 msg = '未打卡成功'
-            Huge.Qsend(self.qq,msg)
+            Huge.Qsend(self.qkey,msg)
 
 
 if __name__ == '__main__':
