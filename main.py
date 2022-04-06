@@ -53,6 +53,9 @@ class Huge(object):
 
         request = self.session.get(url, headers=self.headers, params=params)
         data = json.loads(request.content.decode('utf8'))
+        if data['err_msg'] == 'ERR_NOT_LOGIN':
+            print('未登录')
+            return None
         return data['data']['calendar_id']
 
     def isCheckin(self):
@@ -84,39 +87,46 @@ class Huge(object):
         return pic, voc
 
     def checkin(self):
-        flag = Huge.isCheckin(self)
-        if flag[0] == 1:
-            print('已经打卡了')
-            return
-        elif flag[1] == '':
-            print('今天没有打卡内容')
+        calendar_id = Huge.getCalendarId(self)
+        if calendar_id == None:
+            Huge.Qsend(self.qkey,'未登录')
             return
         else:
-            connect = Huge.getPic(self)
-            url = 'https://apiopen.jingdaka.com/user/submit'
-            data = {
-                "content": "", "word_count": 0, "form_id": "", "document_list": [],
-                "picture_list": [connect[0]],
-                "voice_list": [{
-                    "voice": connect[1]['voice_url'],
-                    "voice_duration": connect[1]['voice_duration']
-                }],
-                "video_list": [],
-                "web_title": "",
-                "website": "",
-                "show_range": 0,
-                "course_calendar_id": Huge.getCalendarId(self),
-                "course_id": self.couseid[0],
-                "record_at": "%sT00:00:00+08:00" % Huge.getTimes()
-            }
-
-            request = self.session.post(url, headers=self.headers, data=json.dumps(data))
-            data = json.loads(request.content.decode('utf8'))
-            if data['err_msg'] == 'SUCCESS':
-                msg = '今日英语虎哥未打卡,已为您自动打卡'
+            flag = Huge.isCheckin(self)
+            if flag[0] == 1:
+                print('已经打卡了')
+                return
+            elif flag[1] == '':
+                print('没有打卡内容')
+                return
             else:
-                msg = '未打卡成功'
-            Huge.Qsend(self.qkey,msg)
+                connect = Huge.getPic(self)
+                url = 'https://apiopen.jingdaka.com/user/submit'
+                data = {
+                    "content": "", "word_count": 0, "form_id": "", "document_list": [],
+                    "picture_list": [connect[0]],
+                    "voice_list": [{
+                        "voice": connect[1]['voice_url'],
+                        "voice_duration": connect[1]['voice_duration']
+                    }],
+                    "video_list": [],
+                    "web_title": "",
+                    "website": "",
+                    "show_range": 0,
+                    "course_calendar_id": Huge.getCalendarId(self),
+                    "course_id": self.couseid[0],
+                    "record_at": "%sT00:00:00+08:00" % Huge.getTimes()
+                }
+
+                request = self.session.post(url, headers=self.headers, data=json.dumps(data))
+                d = json.loads(request.content.decode('utf8'))
+                print(d)
+                sub = d['err_msg']
+                if sub == 'SUCCESS':
+                    msg = '今日已自动打卡'
+                else:
+                    msg = '未打卡成功'
+                Huge.Qsend(self.qkey,msg)
 
 
 if __name__ == '__main__':
